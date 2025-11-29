@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Variables globales */
+:root {
+  --primary-color: #1abc9c;
+  --secondary-color: #e8f8f5;
+  --accent-color: #16a085;
+}

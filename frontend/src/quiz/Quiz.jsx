@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import "../assets/home.css";
 
 export default function Quiz() {
   const navigate = useNavigate();
@@ -60,88 +61,131 @@ export default function Quiz() {
             >
               Quiz
             </button>
+            <button
+              className="nav-link"
+              onClick={() => navigate("/solutions")}
+            >
+              Solution
+            </button>
           </div>
         </div>
       </nav>
 
       {/* CONTENU DU QUIZ */}
-      <div style={styles.wrapper}>
-        <div style={styles.container}>
-          <h1 style={styles.title}>Quiz Climat 🌍</h1>
+      <div className="quiz-wrapper">
+        <div className="quiz-container">
+          <div className="quiz-header">
+            <h1 className="quiz-title">Quiz Climat 🌍</h1>
+            <div className="quiz-progress-info">
+              Question {current + 1} sur {questions.length}
+            </div>
+          </div>
 
           {current < questions.length ? (
-            <div style={styles.card}>
+            <div className="quiz-card">
               {/* Barre de progression */}
-              <div style={styles.progressBarBackground}>
+              <div className="quiz-progress-bar">
                 <div
-                  style={{
-                    ...styles.progressBarFill,
-                    width: `${progressPercent}%`,
-                  }}
+                  className="quiz-progress-fill"
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
 
-              <h2 style={styles.question}>{q.question}</h2>
+              <h2 className="quiz-question">{q.question}</h2>
 
               {!showExplanation ? (
-                <div style={styles.buttons}>
+                <div className="quiz-buttons">
                   <button
-                    style={styles.btn}
+                    className="quiz-btn quiz-btn-true"
                     onClick={() => handleAnswer(true)}
                   >
+                    <span className="quiz-btn-icon">✓</span>
                     Vrai
                   </button>
                   <button
-                    style={styles.btn}
+                    className="quiz-btn quiz-btn-false"
                     onClick={() => handleAnswer(false)}
                   >
+                    <span className="quiz-btn-icon">✗</span>
                     Faux
                   </button>
                 </div>
               ) : (
-                <div style={styles.explanationBox}>
-                  {answer === q.reponse_vraie ? (
-                    <p style={styles.correct}>✔ Bonne réponse !</p>
-                  ) : (
-                    <p style={styles.wrong}>✘ Mauvaise réponse</p>
-                  )}
+                <div className="quiz-explanation">
+                  <div className={`quiz-result ${answer === q.reponse_vraie ? 'correct' : 'wrong'}`}>
+                    {answer === q.reponse_vraie ? (
+                      <div className="quiz-result-content">
+                        <span className="quiz-result-icon">🎉</span>
+                        <span>Excellente réponse !</span>
+                      </div>
+                    ) : (
+                      <div className="quiz-result-content">
+                        <span className="quiz-result-icon">😔</span>
+                        <span>Pas tout à fait...</span>
+                      </div>
+                    )}
+                  </div>
 
-                  <p>
-                    <strong>Explication :</strong> {q.explication}
-                  </p>
+                  <div className="quiz-explanation-content">
+                    <h4>💡 Explication</h4>
+                    <p>{q.explication}</p>
+                  </div>
 
-                  <div style={styles.buttonRow}>
+                  <div className="quiz-actions">
                     <a
                       href={q.source_url}
                       target="_blank"
                       rel="noreferrer"
-                      style={styles.sourceBtn}
+                      className="quiz-source-btn"
                     >
-                      🔗 Voir source
+                      <span>📖</span>
+                      Voir la source
                     </a>
 
-                    <button style={styles.nextBtn} onClick={nextQuestion}>
-                      Question suivante →
+                    <button className="quiz-next-btn" onClick={nextQuestion}>
+                      {current === questions.length - 1 ? 'Voir les résultats' : 'Question suivante'}
+                      <span>→</span>
                     </button>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div style={styles.end}>
-              <h2>🎉 Bravo ! Tu as terminé le quiz.</h2>
-              <p>
-                Ton score : {Math.round((score / questions.length) * 100)} %
-              </p>
-              <button
-                onClick={() => {
-                  setCurrent(0);
-                  setScore(0);
-                }}
-                style={styles.restartBtn}
-              >
-                Recommencer
-              </button>
+            <div className="quiz-results">
+              <div className="quiz-results-header">
+                <div className="quiz-results-icon">🏆</div>
+                <h2>Félicitations !</h2>
+                <p className="quiz-results-subtitle">Vous avez terminé le quiz climat</p>
+              </div>
+              
+              <div className="quiz-score">
+                <div className="quiz-score-circle">
+                  <span className="quiz-score-value">{Math.round((score / questions.length) * 100)}%</span>
+                </div>
+                <p className="quiz-score-text">
+                  {score} bonne{score > 1 ? 's' : ''} réponse{score > 1 ? 's' : ''} sur {questions.length}
+                </p>
+              </div>
+
+              <div className="quiz-final-actions">
+                <button
+                  onClick={() => {
+                    setCurrent(0);
+                    setScore(0);
+                    setAnswer(null);
+                    setShowExplanation(false);
+                  }}
+                  className="quiz-restart-btn"
+                >
+                  🔄 Recommencer le quiz
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="quiz-home-btn"
+                >
+                  🏠 Retour à l'accueil
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -150,92 +194,4 @@ export default function Quiz() {
   );
 }
 
-/* ================== STYLES ================== */
 
-const styles = {
-  wrapper: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "calc(100vh - 60px)",
-    paddingTop: 60,
-  },
-  container: { width: "100%", maxWidth: 600, padding: 20 },
-  title: { textAlign: "center", marginBottom: 20 },
-  card: {
-  background: "white",
-  padding: 20,
-  borderRadius: 12,
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  borderLeft: "6px solid #2ecc71",
-   borderRight: "6px solid #2ecc71",
-  
-
-},
-  progressBarBackground: {
-    width: "100%",
-    height: 10,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
-    marginBottom: 15,
-    overflow: "hidden",
-    boxShadow: "inset 0 1px 3px rgba(0,0,0,0.2)",
-  },
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: "#4caf50",
-    borderRadius: 5,
-    transition: "width 0.3s ease",
-  },
-  question: { marginBottom: 20 },
-  buttons: { display: "flex", justifyContent: "space-between" },
-  btn: {
-    width: "45%",
-    padding: 15,
-    fontSize: 18,
-    borderRadius: 10,
-    border: "none",
-    cursor: "pointer",
-    // background: "#2196f3",
-    background: "#2ecc71",
-
-    color: "white",
-  },
-  explanationBox: { marginTop: 20 },
-  correct: { color: "green", fontWeight: "bold" },
-  wrong: { color: "red", fontWeight: "bold" },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: 10,
-    marginTop: 15,
-  },
-  sourceBtn: {
-    padding: "10px 15px",
-    backgroundColor: "#ff9800",
-    color: "white",
-    fontWeight: "bold",
-    textDecoration: "none",
-    borderRadius: 10,
-    cursor: "pointer",
-  },
-  nextBtn: {
-    padding: "10px 15px",
-    borderRadius: 10,
-    background: "#4caf50",
-    border: "none",
-    color: "white",
-    fontWeight: "bold",
-    cursor: "pointer",
-  },
-  end: { textAlign: "center" },
-  restartBtn: {
-    marginTop: 50,
-    padding: 10,
-    background: "#ff9800",
-    border: "none",
-    color: "white",
-    cursor: "pointer",
-    borderRadius: 10,
-  },
-};
