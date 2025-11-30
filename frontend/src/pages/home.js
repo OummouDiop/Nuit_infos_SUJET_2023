@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="home-container">
       {/* Navigation */}
-      <nav className="navbar">
+      {/* <nav className="navbar">
         <div className="nav-content">
           <div className="logo">🌱 Climat</div>
           <div className="nav-links">
@@ -16,7 +16,19 @@ export default function Home() {
             <button className="nav-link" onClick={() => navigate("/solutions")}>Solutions</button>
           </div>
         </div>
-      </nav>
+      </nav> */}
+      <nav className="navbar">
+                <div className="nav-content">
+                    <div className="logo">🌱 Climat <span className="highlight">Vrai/Faux</span></div>
+                    <div className="nav-links">
+                        <button className="nav-link active" onClick={() => navigate('/')}>Accueil</button>
+                        <button className="nav-link" onClick={() => navigate('/idees_fausse')}>Idées Fausses</button>
+                        <button className="nav-link" onClick={() => navigate('/solutions')}>Solutions Réelles</button>
+                        <button className="nav-link" onClick={() => navigate('/quiz')}>Quiz (Vrai/Faux)</button>
+                    
+                    </div>
+                </div>
+            </nav>
 
       {/* Hero Section */}
       <motion.section 
