@@ -15,10 +15,12 @@ const FausseIdeePage = () => {
 
     // Récupérer les fausses idées depuis l'API
     useEffect(() => {
-        const fetchFalseIdeas = async () => {
+        const fetchFausses = async () => {
             try {
                 setLoading(true);
-                const data = await ApiService.getFalseIdeas();
+                console.log('Fetching données depuis:', process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api');
+                const data = await ApiService.getIdeesFausses();
+                console.log('Données reçues:', data);
                 setFaussesInfos(data);
                 setError(null);
             } catch (err) {
@@ -29,7 +31,7 @@ const FausseIdeePage = () => {
             }
         };
 
-        fetchFalseIdeas();
+        fetchFausses();
     }, []); 
 
     return (

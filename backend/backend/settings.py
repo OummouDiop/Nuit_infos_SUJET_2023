@@ -23,9 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-uk_$@ytid5r0z8emjqapffraw#*!cw+u5wng0@nt&3coi6u^x6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+import os
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.railway.app',
+    '.vercel.app'
+]
 
 
 # Application  
@@ -53,9 +59,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+# CORS configuration for production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://vercel.app",
 ]
+
+# Allow all origins in development, specific origins in production
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    frontend_url = os.environ.get('FRONTEND_URL', '')
+    if frontend_url:
+        CORS_ALLOWED_ORIGINS.append(frontend_url)
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -81,7 +97,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 from mongoengine import connect
-connect('climatdb', host='mongodb://localhost:27017')
+
+# MongoDB configuration
+MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017')
+MONGODB_DB = os.environ.get('MONGODB_DB', 'climatdb')
+
+# En production, utilisez les variables d'environnement
+# En développement, temporairement utiliser Atlas pour tester
+if DEBUG:
+    MONGODB_URI = "mongodb+srv://23066_db_user:Qf3lQ9Dbxw42A2Y7@climat-cluster.uys59dt.mongodb.net/climatdb?retryWrites=true&w=majority"
+
+connect(MONGODB_DB, host=MONGODB_URI)
 
 
 
