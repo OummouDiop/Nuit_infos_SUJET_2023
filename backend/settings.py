@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.railway.app',
-    '.vercel.app'
+    '.vercel.app',
+    '.onrender.com'
 ]
 
 
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 # CORS configuration for production
 CORS_ALLOWED_ORIGINS = [
@@ -70,6 +71,7 @@ CORS_ALLOWED_ORIGINS = [
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
+    CORS_ALLOW_ALL_ORIGINS = True  # Temporairement pour le test
     frontend_url = os.environ.get('FRONTEND_URL', '')
     if frontend_url:
         CORS_ALLOWED_ORIGINS.append(frontend_url)
@@ -95,11 +97,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-from mongoengine import connect
+# Database - Configuration vide pour satisfaire Django
+# Nous utilisons MongoDB via mongoengine
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.dummy',
+    }
+}
 
 # MongoDB configuration
+from mongoengine import connect
+
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017')
 MONGODB_DB = os.environ.get('MONGODB_DB', 'climatdb')
 
@@ -108,7 +116,10 @@ MONGODB_DB = os.environ.get('MONGODB_DB', 'climatdb')
 if DEBUG:
     MONGODB_URI = "mongodb+srv://23066_db_user:Qf3lQ9Dbxw42A2Y7@climat-cluster.uys59dt.mongodb.net/climatdb?retryWrites=true&w=majority"
 
-connect(MONGODB_DB, host=MONGODB_URI)
+try:
+    connect(MONGODB_DB, host=MONGODB_URI)
+except Exception as e:
+    print(f"MongoDB connection error: {e}")
 
 
 
