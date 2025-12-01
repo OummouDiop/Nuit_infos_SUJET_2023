@@ -1,5 +1,5 @@
 // Service API pour communiquer avec le backend Django
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://nuit-infos-sujet-2023.onrender.com/api';
 
 class ApiService {
   // Récupérer toutes les solutions
@@ -43,7 +43,7 @@ class ApiService {
   // Récupérer toutes les idées fausses
   static async getIdeesFausses() {
     try {
-      const response = await fetch(`${API_BASE_URL}/idees_fausses/`);
+      const response = await fetch(`${API_BASE_URL}/idees-fausses/`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
